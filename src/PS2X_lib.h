@@ -103,6 +103,7 @@ GNU General Public License for more details.
 #endif 
 
 //These are our button constants
+#ifndef DISABLE_PS2X_CONSTANTS
 #define PSB_SELECT      0x0001
 #define PSB_L3          0x0002
 #define PSB_R3          0x0004
@@ -158,6 +159,7 @@ GNU General Public License for more details.
 #define PSAB_CIRCLE      14
 #define PSAB_CROSS       15
 #define PSAB_SQUARE      16
+#endif
 
 #define SET(x,y) (x|=(1<<y))
 #define CLR(x,y) (x&=(~(1<<y)))
