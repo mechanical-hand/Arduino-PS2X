@@ -465,5 +465,4 @@ void PS2X::dump_buffer(Print &p)
         p.print(PS2data[i], HEX);
         p.print(" ");
     }
-    p.println();
 }
