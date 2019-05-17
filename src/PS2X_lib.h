@@ -86,6 +86,12 @@ GNU General Public License for more details.
   #include "WProgram.h"
 #endif
 
+#ifdef PS2X_REGISTER_T
+    typedef PS2X_REGISTER_T ps2x_register_t;
+#else
+    typedef uint8_t ps2x_register_t;
+#endif
+
 #include <math.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -201,17 +207,15 @@ class PS2X {
     unsigned int buttons;
 
     #if defined(__AVR__) || defined(HAND_STM32DUINO_REGS)
-      uint8_t maskToBitNum(uint8_t);
-      uint8_t _clk_mask;
-      volatile uint8_t *_clk_oreg;
-      uint8_t _cmd_mask;
-      volatile uint8_t *_cmd_oreg;
-      uint8_t _att_mask;
-      volatile uint8_t *_att_oreg;
-      uint8_t _dat_mask;
-      volatile uint8_t *_dat_ireg;
+      ps2x_register_t _clk_mask;
+      volatile ps2x_register_t *_clk_oreg;
+      ps2x_register_t _cmd_mask;
+      volatile ps2x_register_t *_cmd_oreg;
+      ps2x_register_t _att_mask;
+      volatile ps2x_register_t *_att_oreg;
+      ps2x_register_t _dat_mask;
+      volatile ps2x_register_t *_dat_ireg;
     #else
-      uint8_t maskToBitNum(uint8_t);
       uint16_t _clk_mask;
       volatile uint32_t *_clk_lport_set;
       volatile uint32_t *_clk_lport_clr;
