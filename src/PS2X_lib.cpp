@@ -2,7 +2,11 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <avr/io.h>
+
+#ifdef __AVR__
+    #include <avr/io.h>
+#endif
+
 #if ARDUINO > 22
   #include "Arduino.h"
 #else
