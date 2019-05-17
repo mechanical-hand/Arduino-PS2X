@@ -227,6 +227,7 @@ byte PS2X::config_gamepad(uint8_t clk, uint8_t cmd, uint8_t att, uint8_t dat, bo
     Serial.println("Controller mode not matched or no controller found");
     Serial.print("Expected 0x41, 0x73 or 0x79, but got ");
     Serial.println(PS2data[1], HEX);
+    dump_buffer(Serial);
 #endif
     return 1; //return error code 1
   }
@@ -456,3 +457,13 @@ inline bool PS2X::DAT_CHK(void) {
 }
 
 #endif
+
+void PS2X::dump_buffer(Print &p)
+{
+    for(int i = 0; i < 21; i++)
+    {
+        p.print(PS2data[i], HEX);
+        p.print(" ");
+    }
+    p.println();
+}

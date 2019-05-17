@@ -189,6 +189,7 @@ class PS2X {
     bool enablePressures();
     byte Analog(byte);
     void reconfig_gamepad();
+    void dump_buffer(Print&);
 
   private:
     inline void CLK_SET(void);
