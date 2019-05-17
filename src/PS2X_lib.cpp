@@ -58,7 +58,7 @@ unsigned char PS2X::_gamepad_shiftinout (char byte) {
    for(unsigned char i=0;i<8;i++) {
       if(CHK(byte,i)) CMD_SET();
       else CMD_CLR();
-	  
+
       CLK_CLR();
       delayMicroseconds(CTRL_CLK);
 
@@ -115,7 +115,7 @@ boolean PS2X::read_gamepad(boolean motor1, byte motor2) {
       }
 
       ATT_SET(); // HI disable joystick
-      // Check to see if we received valid data or not.  
+      // Check to see if we received valid data or not.
 	  // We should be in analog mode for our data to be valid (analog == 0x7_)
       if ((PS2data[1] & 0xf0) == 0x70)
          break;
@@ -169,7 +169,7 @@ byte PS2X::config_gamepad(uint8_t clk, uint8_t cmd, uint8_t att, uint8_t dat, bo
 
   byte temp[sizeof(type_read)];
 
-#ifdef __AVR__
+#if defined(__AVR__) || defined(HAND_STM32DUINO_REGS)
   _clk_mask = digitalPinToBitMask(clk);
   _clk_oreg = portOutputRegister(digitalPinToPort(clk));
   _cmd_mask = digitalPinToBitMask(cmd);
@@ -215,9 +215,9 @@ byte PS2X::config_gamepad(uint8_t clk, uint8_t cmd, uint8_t att, uint8_t dat, bo
   read_gamepad();
   read_gamepad();
 
-  //see if it talked - see if mode came back. 
+  //see if it talked - see if mode came back.
   //If still anything but 41, 73 or 79, then it's not talking
-  if(PS2data[1] != 0x41 && PS2data[1] != 0x73 && PS2data[1] != 0x79){ 
+  if(PS2data[1] != 0x41 && PS2data[1] != 0x73 && PS2data[1] != 0x79){
 #ifdef PS2X_DEBUG
     Serial.println("Controller mode not matched or no controller found");
     Serial.print("Expected 0x41, 0x73 or 0x79, but got ");
@@ -342,9 +342,9 @@ byte PS2X::readType() {
     return 1;
   else if(controller_type == 0x01)
     return 2;
-  else if(controller_type == 0x0C)  
+  else if(controller_type == 0x0C)
     return 3;  //2.4G Wireless Dual Shock PS2 Game Controller
-	
+
   return 0;
 }
 
@@ -384,51 +384,40 @@ void PS2X::reconfig_gamepad(){
 }
 
 /****************************************************************************************/
+#if defined(__AVR__) || defined(HAND_STM32DUINO_REGS)
+
 #ifdef __AVR__
+    #define WITHOUT_INTERRUPTS(x) do{register uint8_t old_sreg = SREG; cli(); x; SREG = old_sreg; }while(0);
+#else
+    #define WITHOUT_INTERRUPTS(x) do {x;} while(0);
+#endif
+
 inline void  PS2X::CLK_SET(void) {
-  register uint8_t old_sreg = SREG;
-  cli();
-  *_clk_oreg |= _clk_mask;
-  SREG = old_sreg;
+  WITHOUT_INTERRUPTS(*_clk_oreg |= _clk_mask);
 }
 
 inline void  PS2X::CLK_CLR(void) {
-  register uint8_t old_sreg = SREG;
-  cli();
-  *_clk_oreg &= ~_clk_mask;
-  SREG = old_sreg;
+  WITHOUT_INTERRUPTS(*_clk_oreg &= ~_clk_mask);
 }
 
 inline void  PS2X::CMD_SET(void) {
-  register uint8_t old_sreg = SREG;
-  cli();
-  *_cmd_oreg |= _cmd_mask; // SET(*_cmd_oreg,_cmd_mask);
-  SREG = old_sreg;
+  WITHOUT_INTERRUPTS(*_cmd_oreg |= _cmd_mask);
 }
 
 inline void  PS2X::CMD_CLR(void) {
-  register uint8_t old_sreg = SREG;
-  cli();
-  *_cmd_oreg &= ~_cmd_mask; // SET(*_cmd_oreg,_cmd_mask);
-  SREG = old_sreg;
+  WITHOUT_INTERRUPTS(*_cmd_oreg &= ~_cmd_mask);
 }
 
 inline void  PS2X::ATT_SET(void) {
-  register uint8_t old_sreg = SREG;
-  cli();
-  *_att_oreg |= _att_mask ;
-  SREG = old_sreg;
+  WITHOUT_INTERRUPTS(*_att_oreg |= _att_mask);
 }
 
 inline void PS2X::ATT_CLR(void) {
-  register uint8_t old_sreg = SREG;
-  cli();
-  *_att_oreg &= ~_att_mask;
-  SREG = old_sreg;
+  WITHOUT_INTERRUPTS(*_att_oreg &= ~_att_mask);
 }
 
 inline bool PS2X::DAT_CHK(void) {
-  return (*_dat_ireg & _dat_mask) ? true : false;
+  return *_dat_ireg & _dat_mask;
 }
 
 #else
@@ -458,7 +447,7 @@ inline void PS2X::ATT_CLR(void) {
 }
 
 inline bool PS2X::DAT_CHK(void) {
-  return (*_dat_lport & _dat_mask) ? true : false;
+  return *_dat_lport & _dat_mask
 }
 
 #endif
