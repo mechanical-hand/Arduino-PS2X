@@ -23,27 +23,27 @@ static byte enable_rumble[]={0x01,0x4D,0x00,0x00,0x01};
 static byte type_read[]={0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A};
 
 /****************************************************************************************/
-boolean PS2X::NewButtonState() {
+bool PS2X::NewButtonState() {
   return ((last_buttons ^ buttons) > 0);
 }
 
 /****************************************************************************************/
-boolean PS2X::NewButtonState(unsigned int button) {
+bool PS2X::NewButtonState(unsigned int button) {
   return (((last_buttons ^ buttons) & button) > 0);
 }
 
 /****************************************************************************************/
-boolean PS2X::ButtonPressed(unsigned int button) {
+bool PS2X::ButtonPressed(unsigned int button) {
   return(NewButtonState(button) & Button(button));
 }
 
 /****************************************************************************************/
-boolean PS2X::ButtonReleased(unsigned int button) {
+bool PS2X::ButtonReleased(unsigned int button) {
   return((NewButtonState(button)) & ((~last_buttons & button) > 0));
 }
 
 /****************************************************************************************/
-boolean PS2X::Button(uint16_t button) {
+bool PS2X::Button(uint16_t button) {
   return ((~buttons & button) > 0);
 }
 
@@ -86,7 +86,7 @@ void PS2X::read_gamepad() {
 }
 
 /****************************************************************************************/
-boolean PS2X::read_gamepad(boolean motor1, byte motor2) {
+bool PS2X::read_gamepad(bool motor1, byte motor2) {
    double temp = millis() - last_read;
 
    if (temp > 1500) //waited to long

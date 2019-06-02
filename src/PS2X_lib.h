@@ -174,14 +174,14 @@ GNU General Public License for more details.
 
 class PS2X {
   public:
-    boolean Button(uint16_t);                //will be TRUE if button is being pressed
+    bool Button(uint16_t);                //will be TRUE if button is being pressed
     unsigned int ButtonDataByte();
-    boolean NewButtonState();
-    boolean NewButtonState(unsigned int);    //will be TRUE if button was JUST pressed OR released
-    boolean ButtonPressed(unsigned int);     //will be TRUE if button was JUST pressed
-    boolean ButtonReleased(unsigned int);    //will be TRUE if button was JUST released
+    bool NewButtonState();
+    bool NewButtonState(unsigned int);    //will be TRUE if button was JUST pressed OR released
+    bool ButtonPressed(unsigned int);     //will be TRUE if button was JUST pressed
+    bool ButtonReleased(unsigned int);    //will be TRUE if button was JUST released
     void read_gamepad();
-    boolean  read_gamepad(boolean, byte);
+    bool  read_gamepad(bool, byte);
     byte readType();
     byte config_gamepad(uint8_t, uint8_t, uint8_t, uint8_t);
     byte config_gamepad(uint8_t, uint8_t, uint8_t, uint8_t, bool, bool);
@@ -233,8 +233,8 @@ class PS2X {
     unsigned long last_read;
     byte read_delay;
     byte controller_type;
-    boolean en_Rumble;
-    boolean en_Pressures;
+    bool en_Rumble;
+    bool en_Pressures;
 };
 
 #endif
